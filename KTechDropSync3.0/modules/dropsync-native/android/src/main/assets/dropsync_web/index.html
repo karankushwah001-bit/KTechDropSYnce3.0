@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>KTech DropSync Elite Edition 3.0</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0f172a;color:#f3f4f6;min-height:100vh;padding-bottom:40px}
+    header{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);padding:24px 16px;text-align:center;box-shadow:0 10px 25px -5px rgba(79,70,229,0.4)}
+    header h1{font-size:1.8em;font-weight:800;letter-spacing:-0.5px;color:#fff}
+    header p{opacity:0.85;font-size:0.85em;margin-top:4px}
+
+    .nav-tabs{display:flex;justify-content:center;gap:8px;background:#1e293b;padding:8px;margin:16px auto;max-width:600px;border-radius:12px;border:1px solid #334155}
+    .tab-btn{flex:1;padding:10px 14px;border:none;background:transparent;color:#94a3b8;font-weight:600;font-size:0.88em;border-radius:8px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+    .tab-btn.active{background:#4f46e5;color:#fff;box-shadow:0 4px 12px rgba(79,70,229,0.3)}
+
+    .container{max-width:900px;margin:0 auto;padding:0 12px}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    .card{background:#1e293b;border-radius:16px;padding:20px;margin-bottom:16px;border:1px solid #334155;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
+    h2{color:#a5b4fc;font-size:1.05em;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+    .dropzone{border:2px dashed #6366f1;border-radius:12px;padding:32px 16px;text-align:center;cursor:pointer;background:rgba(99,102,241,0.05);transition:all 0.2s}
+    .dropzone.hover{background:rgba(99,102,241,0.15);border-color:#818cf8}
+    .dropzone-icon{font-size:2.4em;margin-bottom:8px}
+    .dropzone-text{color:#e0e7ff;font-weight:600;font-size:0.95em}
+    .dropzone-sub{color:#94a3b8;font-size:0.8em;margin-top:4px}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-size:0.9em;font-weight:600;transition:opacity 0.15s;text-decoration:none;width:100%}
+    .btn:hover{opacity:0.9}
+    .btn-sm{width:auto;padding:6px 12px;font-size:0.8em;border-radius:8px}
+    .btn-danger{background:#ef4444;border:none;color:#fff}
+
+    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-top:12px}
+    .gallery-card{background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #334155;position:relative;display:flex;flex-direction:column}
+    .gallery-thumb{width:100%;height:100px;object-fit:cover;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:2em}
+    .gallery-info{padding:8px;font-size:0.75em;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+    .file-item{display:flex;align-items:center;gap:12px;padding:12px;background:#0f172a;border-radius:10px;margin-bottom:8px;border:1px solid #334155}
+    .file-icon{font-size:1.6em;flex-shrink:0}
+    .file-info{flex:1;min-width:0}
+    .file-name{font-weight:600;font-size:0.88em;color:#f1f5f9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-size{color:#94a3b8;font-size:0.75em;margin-top:2px}
+
+    textarea{width:100%;padding:12px;background:#0f172a;border:1.5px solid #334155;color:#fff;border-radius:10px;font-size:0.9em;resize:vertical;min-height:90px;outline:none}
+    textarea:focus{border-color:#6366f1}
+    .text-box{background:#0f172a;border-radius:10px;padding:12px;margin-bottom:8px;border-left:4px solid #6366f1}
+    .text-meta{font-size:0.72em;color:#818cf8;font-weight:700;margin-bottom:4px;text-transform:uppercase}
+    .text-body{font-size:0.88em;color:#e2e8f0;word-break:break-word}
+
+    .badge{background:#4f46e5;color:#fff;font-size:0.72em;padding:2px 8px;border-radius:12px;margin-left:6px}
+    progress{width:100%;height:8px;border-radius:4px;appearance:none;margin-top:8px}
+    progress::-webkit-progress-bar{background:#334155;border-radius:4px}
+    progress::-webkit-progress-value{background:linear-gradient(90deg,#4f46e5,#7c3aed);border-radius:4px}
+    .empty{text-align:center;color:#64748b;padding:24px;font-size:0.88em}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>KTech DropSync 3.0</h1>
+    <p>Elite Local Wireless Portal - Speed &amp; Precision (Native Server)</p>
+  </header>
+
+  <div class="container">
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('gallery', event)">Gallery</button>
+      <button class="tab-btn" onclick="switchTab('files', event)">Files</button>
+      <button class="tab-btn" onclick="switchTab('text', event)">Clipboard</button>
+    </div>
+
+    <div class="card">
+      <h2>Send Files to Phone</h2>
+      <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <div class="dropzone-icon">+</div>
+        <div class="dropzone-text">Drop Photos, Videos, or Files here</div>
+        <div class="dropzone-sub">Any type, any size, single or multiple files</div>
+      </div>
+      <input type="file" id="fileInput" multiple style="display:none">
+      <div id="uploadProgress"></div>
+    </div>
+
+    <div id="galleryTab" class="tab-content active">
+      <div class="card">
+        <h2>Photos &amp; Media <span class="badge" id="mediaBadge">0</span></h2>
+        <div id="galleryGrid" class="gallery-grid">
+          <div class="empty">Scanning shared media...</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="filesTab" class="tab-content">
+      <div class="card">
+        <h2>Shared From Phone <span class="badge" id="sharedBadge">0</span></h2>
+        <div id="sharedFileList"><div class="empty">No files shared yet.</div></div>
+      </div>
+      <div class="card">
+        <h2>Received From Browser <span class="badge" id="uploadedBadge">0</span></h2>
+        <div id="uploadedFileList"><div class="empty">No uploads yet.</div></div>
+      </div>
+    </div>
+
+    <div id="textTab" class="tab-content">
+      <div class="card">
+        <h2>Send Text to Phone</h2>
+        <textarea id="textInput" placeholder="Paste link, note, or text here..."></textarea>
+        <button class="btn" onclick="sendText()" style="margin-top:10px">Send to Phone</button>
+      </div>
+      <div class="card">
+        <h2>Received Clipboard Items</h2>
+        <div id="textHistory"><div class="empty">No text messages exchanged.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(name, evt) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+      document.getElementById(name + 'Tab').classList.add('active');
+    }
+
+    function formatSize(b) {
+      if (!b) return '0 B';
+      var s = ['B','KB','MB','GB'];
+      var i = Math.floor(Math.log(b)/Math.log(1024));
+      return (b/Math.pow(1024,i)).toFixed(1) + ' ' + s[i];
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, function(c) {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
+
+    function loadData() {
+      Promise.all([
+        fetch('/api/files/shared').then(r => r.json()).catch(() => ({files:[]})),
+        fetch('/api/files/uploaded').then(r => r.json()).catch(() => ({files:[]})),
+        fetch('/api/texts').then(r => r.json()).catch(() => ({texts:[]}))
+      ]).then(results => {
+        renderShared(results[0].files || []);
+        renderUploaded(results[1].files || []);
+        renderTexts(results[2].texts || []);
+      });
+    }
+
+    function deleteFile(type, name) {
+      if (!confirm('Delete "' + name + '"?')) return;
+      fetch('/api/delete/' + type + '/' + encodeURIComponent(name), { method: 'POST' })
+        .then(r => r.json())
+        .then(() => loadData());
+    }
+
+    function renderShared(files) {
+      document.getElementById('sharedBadge').textContent = files.length;
+      var media = files.filter(f => f.category === 'image' || f.category === 'video');
+      document.getElementById('mediaBadge').textContent = media.length;
+
+      var grid = document.getElementById('galleryGrid');
+      if (!media.length) {
+        grid.innerHTML = '<div class="empty">No photos/videos shared from the phone yet.</div>';
+      } else {
+        grid.innerHTML = media.map(f => {
+          var safe = escapeHtml(f.name);
+          var url = '/api/download/shared/' + encodeURIComponent(f.name);
+          var thumb = f.category === 'image'
+            ? '<img class="gallery-thumb" src="' + url + '" loading="lazy" alt="' + safe + '">'
+            : '<video class="gallery-thumb" src="' + url + '" muted preload="metadata"></video>';
+          return '<div class="gallery-card">' + thumb +
+            '<div class="gallery-info">' + safe + '</div>' +
+            '<div style="display:flex;gap:4px;padding:4px">' +
+            '<a class="btn btn-sm" href="' + url + '" download style="flex:1">Save</a>' +
+            '<button class="btn btn-sm btn-danger" onclick="deleteFile(\'shared\', \'' + f.name.replace(/'/g, "\\'") + '\')">Del</button>' +
+            '</div></div>';
+        }).join('');
+      }
+
+      var list = document.getElementById('sharedFileList');
+      if (!files.length) {
+        list.innerHTML = '<div class="empty">No files available.</div>';
+      } else {
+        list.innerHTML = files.map(f => {
+          var safe = escapeHtml(f.name);
+          var url = '/api/download/shared/' + encodeURIComponent(f.name);
+          return '<div class="file-item"><div class="file-icon">*</div><div class="file-info">' +
+            '<div class="file-name">' + safe + '</div><div class="file-size">' + formatSize(f.size) + '</div></div>' +
+            '<a class="btn btn-sm" href="' + url + '" download>Download</a>' +
+            '<button class="btn btn-sm btn-danger" onclick="deleteFile(\'shared\', \'' + f.name.replace(/'/g, "\\'") + '\')">Del</button></div>';
+        }).join('');
+      }
+    }
+
+    function renderUploaded(files) {
+      document.getElementById('uploadedBadge').textContent = files.length;
+      var list = document.getElementById('uploadedFileList');
+      if (!files.length) {
+        list.innerHTML = '<div class="empty">Nothing uploaded to the phone yet.</div>';
+      } else {
+        list.innerHTML = files.map(f => {
+          var safe = escapeHtml(f.name);
+          var url = '/api/download/uploaded/' + encodeURIComponent(f.name);
+          return '<div class="file-item"><div class="file-icon">*</div><div class="file-info">' +
+            '<div class="file-name">' + safe + '</div><div class="file-size">' + formatSize(f.size) + '</div></div>' +
+            '<a class="btn btn-sm" href="' + url + '" download>Download</a>' +
+            '<button class="btn btn-sm btn-danger" onclick="deleteFile(\'uploaded\', \'' + f.name.replace(/'/g, "\\'") + '\')">Del</button></div>';
+        }).join('');
+      }
+    }
+
+    function renderTexts(texts) {
+      var list = document.getElementById('textHistory');
+      if (!texts.length) {
+        list.innerHTML = '<div class="empty">Clipboard history is empty.</div>';
+      } else {
+        list.innerHTML = texts.map(t => {
+          return '<div class="text-box"><div class="text-meta">' +
+            (t.source === 'phone' ? 'From Phone' : 'From Browser') +
+            '</div><div class="text-body">' + escapeHtml(t.text) + '</div></div>';
+        }).join('');
+      }
+    }
+
+    function sendText() {
+      var val = document.getElementById('textInput').value.trim();
+      if (!val) return;
+      fetch('/api/text', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'text=' + encodeURIComponent(val)
+      }).then(() => {
+        document.getElementById('textInput').value = '';
+        loadData();
+      });
+    }
+
+    function uploadFiles(fileList) {
+      Array.prototype.forEach.call(fileList, function(file) {
+        var container = document.getElementById('uploadProgress');
+        var div = document.createElement('div');
+        div.style.marginTop = '8px';
+        div.innerHTML = '<div>' + escapeHtml(file.name) + '</div><progress value="0" max="100"></progress>';
+        container.appendChild(div);
+        var bar = div.querySelector('progress');
+
+        var fd = new FormData();
+        fd.append('file', file, file.name);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/upload', true);
+        xhr.upload.onprogress = function(e) {
+          if (e.lengthComputable) bar.value = Math.round(e.loaded / e.total * 100);
+        };
+        xhr.onload = function() {
+          div.remove();
+          loadData();
+        };
+        xhr.onerror = function() {
+          div.innerHTML = '<div style="color:#ef4444">Upload failed: ' + escapeHtml(file.name) + '</div>';
+        };
+        xhr.send(fd);
+      });
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function(e) { uploadFiles(e.target.files); });
+    var dz = document.getElementById('dropzone');
+    dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('hover'); });
+    dz.addEventListener('dragleave', function() { dz.classList.remove('hover'); });
+    dz.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dz.classList.remove('hover');
+      uploadFiles(e.dataTransfer.files);
+    });
+
+    loadData();
+    setInterval(loadData, 4000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+group = 'com.ktechsolutions.dropsyncnative'
+version = '1.0.0'
+
+def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
+apply from: expoModulesCorePlugin
+applyKotlinExpoModulesCorePlugin()
+useCoreDependencies()
+useExpoPublishing()
+
+android {
+  namespace "com.ktechsolutions.dropsyncnative"
+  defaultConfig {
+    minSdkVersion 24
+    targetSdkVersion 35
+    versionCode 1
+    versionName "1.0.0"
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+  kotlinOptions {
+    jvmTarget = "17"
+  }
+}
+
+dependencies {
+  // Lightweight embeddable HTTP server that runs entirely in native code.
+  // This is what actually serves the web UI + handles uploads/downloads,
+  // completely independent of the JS bridge/New Architecture.
+  implementation 'org.nanohttpd:nanohttpd:2.3.1'
+  implementation "androidx.core:core-ktx:1.13.1"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+}
