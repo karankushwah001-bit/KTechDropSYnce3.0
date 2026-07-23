@@ -10,11 +10,6 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "prebuild:clean": "expo prebuild --clean"
   },
-  "expo": {
-    "autolinking": {
-      "searchPaths": ["./modules"]
-    }
-  },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.0",
     "@expo/vector-icons": "^15.0.3",
